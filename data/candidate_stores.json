@@ -1,0 +1,44 @@
+[
+  { "domain": "fahertybrand.com", "archetype": "coastal_grandmother" },
+  { "domain": "faithfullthebrand.com", "archetype": "coastal_grandmother" },
+  { "domain": "solidandstriped.com", "archetype": "coastal_grandmother" },
+
+  { "domain": "rowingblazers.com", "archetype": "old_money" },
+  { "domain": "alexmill.com", "archetype": "old_money" },
+  { "domain": "kule.com", "archetype": "old_money" },
+  { "domain": "draperjames.com", "archetype": "old_money" },
+
+  { "domain": "railsclothing.com", "archetype": "clean_girl_minimal" },
+  { "domain": "cuyana.com", "archetype": "clean_girl_minimal" },
+  { "domain": "thefrankieshop.com", "archetype": "clean_girl_minimal" },
+
+  { "domain": "outdoorvoices.com", "archetype": "streetwear_athletic" },
+  { "domain": "girlfriend.com", "archetype": "streetwear_athletic" },
+  { "domain": "aloyoga.com", "archetype": "streetwear_athletic" },
+  { "domain": "varley.com", "archetype": "streetwear_athletic" },
+  { "domain": "edikted.com", "archetype": "streetwear_athletic" },
+
+  { "domain": "shopdoen.com", "archetype": "cottagecore_romantic" },
+  { "domain": "loveshackfancy.com", "archetype": "cottagecore_romantic" },
+  { "domain": "hillhousehome.com", "archetype": "cottagecore_romantic" },
+
+  { "domain": "rains.com", "archetype": "scandi_minimal" },
+  { "domain": "stinegoya.com", "archetype": "scandi_minimal" },
+  { "domain": "envelope1976.com", "archetype": "scandi_minimal" },
+
+  { "domain": "fashionnova.com", "archetype": "trend_forward" },
+  { "domain": "ohpolly.com", "archetype": "trend_forward" },
+  { "domain": "whitefoxboutique.com", "archetype": "trend_forward" },
+  { "domain": "dissh.com.au", "archetype": "trend_forward" },
+  { "domain": "princesspolly.com.au", "archetype": "trend_forward" },
+
+  { "domain": "dollskill.com", "archetype": "edgy_alternative" },
+  { "domain": "killstar.com", "archetype": "edgy_alternative" },
+  { "domain": "lazyoaf.com", "archetype": "edgy_alternative" },
+  { "domain": "braindead.com", "archetype": "edgy_alternative" },
+  { "domain": "onlineceramics.com", "archetype": "edgy_alternative" },
+
+  { "domain": "spell.co", "archetype": "bohemian" },
+  { "domain": "augustethelabel.com", "archetype": "bohemian" },
+  { "domain": "showmeyourmumu.com", "archetype": "bohemian" }
+]
