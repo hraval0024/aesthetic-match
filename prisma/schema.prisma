@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// One row per store probed by scripts/ingest-catalog.ts.
+// status/lastCheckedAt is the real yield report required by PROJECT.md
+// ("report back real yield... ok vs blocked vs disabled").
+model Store {
+  id            String    @id @default(cuid())
+  domain        String    @unique
+  archetypeHint String
+  status        String // ok | blocked | disabled | error
+  lastCheckedAt DateTime  @default(now())
+  products      Product[]
+}
+
+// One row per catalog product, after variant-to-product collapsing.
+model Product {
+  id         String    @id @default(cuid())
+  storeId    String
+  store      Store     @relation(fields: [storeId], references: [id])
+  handle     String
+  title      String
+  productUrl String
+  imageUrl   String
+  imageHash  String?
+  priceMin   Float?
+  priceMax   Float?
+  currency   String?
+  createdAt  DateTime  @default(now())
+  tag        TagCache? @relation(fields: [imageHash], references: [imageHash])
+
+  @@unique([storeId, handle])
+}
+
+// Vision tagging result, cached by image hash so identical images
+// (across products or re-runs) are never re-tagged. silhouette and
+// colorFamily are JSON-stringified arrays -- Prisma+SQLite has no
+// native array/enum column type, so enum validity is enforced in
+// application code (lib/claude/tagImage.ts), same place the schema's
+// forced tool_choice enums are validated as a second safety net.
+model TagCache {
+  imageHash          String    @id
+  archetypePrimary   String
+  archetypeSecondary String?
+  silhouette         String
+  formality          String
+  colorFamily        String
+  fabric             String?
+  textureNotes       String?
+  confidence         Float?
+  taggedAt           DateTime  @default(now())
+  products           Product[]
+}
