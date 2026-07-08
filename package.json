@@ -10,12 +10,14 @@
     "start": "next start",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "ingest": "tsx scripts/ingest-catalog.ts"
+    "ingest": "tsx scripts/ingest-catalog.ts",
+    "tag": "tsx scripts/tag-catalog.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.110.0",
     "@libsql/client": "^0.17.4",
     "@prisma/adapter-libsql": "^7.8.0",
     "@prisma/client": "^7.8.0",

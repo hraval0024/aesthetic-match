@@ -1,0 +1,32 @@
+{
+  "generatedAt": "2026-07-08T22:21:29.442Z",
+  "totalProducts": 200,
+  "cacheHits": 187,
+  "freshlyTagged": 13,
+  "failed": 0,
+  "downloadFailed": 0,
+  "cacheHitRate": 0.935,
+  "successRate": 1,
+  "avgClaudeLatencyMs": 5493,
+  "confidence": {
+    "threshold": 0.6,
+    "average": 0.7700499999999993,
+    "lowConfidenceCount": 5,
+    "lowConfidenceRate": 0.025,
+    "exceedsCoverageAlertThreshold": false,
+    "note": "2.5% of tagged items scored below 0.6 confidence -- within the 15% threshold, taxonomy looks adequate."
+  },
+  "archetypeDistribution": {
+    "old_money": 21,
+    "coastal_grandmother": 18,
+    "clean_girl_minimal": 30,
+    "trend_forward": 43,
+    "streetwear_athletic": 26,
+    "cottagecore_romantic": 28,
+    "scandi_minimal": 8,
+    "edgy_alternative": 15,
+    "bohemian": 11
+  },
+  "failedItems": [],
+  "downloadFailedItems": []
+}
