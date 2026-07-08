@@ -1,0 +1,235 @@
+{
+  "generatedAt": "2026-07-08T20:06:05.038Z",
+  "storesAttempted": 34,
+  "storesByStatus": {
+    "ok": 32,
+    "blocked": 1,
+    "disabled": 1,
+    "error": 0
+  },
+  "rawProductsFetched": 3200,
+  "normalizedProductsAvailable": 3112,
+  "globalCap": 200,
+  "finalCatalogSize": 200,
+  "finalCatalogByArchetype": {
+    "coastal_grandmother": 21,
+    "old_money": 28,
+    "clean_girl_minimal": 19,
+    "streetwear_athletic": 30,
+    "cottagecore_romantic": 18,
+    "scandi_minimal": 18,
+    "trend_forward": 30,
+    "edgy_alternative": 18,
+    "bohemian": 18
+  },
+  "finalCatalogByStore": [
+    {
+      "domain": "fahertybrand.com",
+      "archetype": "coastal_grandmother",
+      "contributed": 7,
+      "available": 100
+    },
+    {
+      "domain": "faithfullthebrand.com",
+      "archetype": "coastal_grandmother",
+      "contributed": 7,
+      "available": 100
+    },
+    {
+      "domain": "solidandstriped.com",
+      "archetype": "coastal_grandmother",
+      "contributed": 7,
+      "available": 100
+    },
+    {
+      "domain": "rowingblazers.com",
+      "archetype": "old_money",
+      "contributed": 7,
+      "available": 100
+    },
+    {
+      "domain": "alexmill.com",
+      "archetype": "old_money",
+      "contributed": 7,
+      "available": 100
+    },
+    {
+      "domain": "kule.com",
+      "archetype": "old_money",
+      "contributed": 7,
+      "available": 100
+    },
+    {
+      "domain": "draperjames.com",
+      "archetype": "old_money",
+      "contributed": 7,
+      "available": 100
+    },
+    {
+      "domain": "railsclothing.com",
+      "archetype": "clean_girl_minimal",
+      "contributed": 7,
+      "available": 100
+    },
+    {
+      "domain": "cuyana.com",
+      "archetype": "clean_girl_minimal",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "thefrankieshop.com",
+      "archetype": "clean_girl_minimal",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "outdoorvoices.com",
+      "archetype": "streetwear_athletic",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "girlfriend.com",
+      "archetype": "streetwear_athletic",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "aloyoga.com",
+      "archetype": "streetwear_athletic",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "varley.com",
+      "archetype": "streetwear_athletic",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "edikted.com",
+      "archetype": "streetwear_athletic",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "shopdoen.com",
+      "archetype": "cottagecore_romantic",
+      "contributed": 6,
+      "available": 26
+    },
+    {
+      "domain": "loveshackfancy.com",
+      "archetype": "cottagecore_romantic",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "hillhousehome.com",
+      "archetype": "cottagecore_romantic",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "rains.com",
+      "archetype": "scandi_minimal",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "stinegoya.com",
+      "archetype": "scandi_minimal",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "envelope1976.com",
+      "archetype": "scandi_minimal",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "fashionnova.com",
+      "archetype": "trend_forward",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "ohpolly.com",
+      "archetype": "trend_forward",
+      "contributed": 6,
+      "available": 99
+    },
+    {
+      "domain": "whitefoxboutique.com",
+      "archetype": "trend_forward",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "dissh.com.au",
+      "archetype": "trend_forward",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "princesspolly.com.au",
+      "archetype": "trend_forward",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "dollskill.com",
+      "archetype": "edgy_alternative",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "killstar.com",
+      "archetype": "edgy_alternative",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "lazyoaf.com",
+      "archetype": "edgy_alternative",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "spell.co",
+      "archetype": "bohemian",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "augustethelabel.com",
+      "archetype": "bohemian",
+      "contributed": 6,
+      "available": 100
+    },
+    {
+      "domain": "showmeyourmumu.com",
+      "archetype": "bohemian",
+      "contributed": 6,
+      "available": 87
+    }
+  ],
+  "failedStores": [
+    {
+      "domain": "braindead.com",
+      "archetype": "edgy_alternative",
+      "status": "blocked",
+      "httpCode": 200,
+      "note": "200 but not JSON (likely bot-challenge/HTML page)"
+    },
+    {
+      "domain": "onlineceramics.com",
+      "archetype": "edgy_alternative",
+      "status": "disabled",
+      "httpCode": 404,
+      "note": "endpoint not found"
+    }
+  ]
+}
