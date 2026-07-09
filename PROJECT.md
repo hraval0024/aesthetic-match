@@ -2,7 +2,7 @@
 
 ## Purpose
 
-To build a standalone web application that remembers and creates PERSISTENT fashion aesthetic recommendation from 5-10 fashion influencers (via image upload/URL), matches it against a live multi-brand catalog from real Shopify stores, and returns explainable, ranked product recommendations instead of "one-time image upload similar products recommendation".
+To build a standalone web application that remembers and creates PERSISTENT fashion aesthetic recommendation from 5-10 fashion influencers (via image upload), matches it against a live multi-brand catalog from real Shopify stores, and returns explainable, ranked product recommendations instead of "one-time image upload similar products recommendation".
 
 This is positioned as a concept for the "Shop App" (Shopify's aggregated order tracking platform) feature.
 
@@ -14,14 +14,11 @@ A woman who shops online and wants curated recommendations pulled from multiple 
 Landing Page
 ↓
 
-User chooses:
-
-• Paste Instagram URLs
-• Upload screenshots
+User uploads 5–10 fashion inspiration screenshots.
 
 ↓
 
-Profile (Style DNA) Creation
+Profile (StyleDNA) Creation
 
 ↓
 

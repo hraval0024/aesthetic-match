@@ -1,19 +1,13 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import { anthropic } from "./client";
 import { TAG_TOOL, TAG_TOOL_NAME, validateTags, type ImageTags } from "./taxonomy";
+import { SUPPORTED_IMAGE_MEDIA_TYPES } from "../images/validate";
 
 // Classification task with a forced single tool call and an enum-constrained
 // schema -- no open-ended reasoning needed, so thinking is off and effort is
 // low. Deliberate cost/latency choice for a few-hundred-call bulk workload;
 // revisit if tagging quality looks weak on ambiguous images.
 const MODEL = "claude-opus-4-8";
-
-const SUPPORTED_MEDIA_TYPES = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/gif",
-  "image/webp",
-]);
 
 export type TagImageResult =
   | { ok: true; tags: ImageTags }
@@ -30,7 +24,7 @@ async function callClaude(imageBytes: Buffer, mediaType: string) {
     thinking: { type: "disabled" },
     output_config: { effort: "low" },
     tool_choice: { type: "tool", name: TAG_TOOL_NAME },
-    tools: [TAG_TOOL],
+    tools: [TAG_TOOL as unknown as Anthropic.Tool],
     messages: [
       {
         role: "user",
@@ -69,7 +63,7 @@ export async function tagImage(
   imageBytes: Buffer,
   mediaType: string,
 ): Promise<TagImageResult> {
-  if (!SUPPORTED_MEDIA_TYPES.has(mediaType)) {
+  if (!SUPPORTED_IMAGE_MEDIA_TYPES.has(mediaType)) {
     return { ok: false, reason: "unsupported_media_type" };
   }
 
