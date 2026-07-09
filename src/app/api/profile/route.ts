@@ -208,21 +208,38 @@ export async function POST(request: NextRequest) {
                   claudeLatencyMs,
                 };
               } else {
-                await prisma.tagCache.upsert({
-                  where: { imageHash: input.hash },
-                  create: {
-                    imageHash: input.hash,
-                    archetypePrimary: tagResult.tags.archetypePrimary,
-                    archetypeSecondary: tagResult.tags.archetypeSecondary,
-                    silhouette: JSON.stringify(tagResult.tags.silhouette),
-                    formality: tagResult.tags.formality,
-                    colorFamily: JSON.stringify(tagResult.tags.colorFamily),
-                    fabric: tagResult.tags.fabric,
-                    textureNotes: tagResult.tags.textureNotes,
-                    confidence: tagResult.tags.confidence,
-                  },
-                  update: {},
-                });
+                try {
+                  await prisma.tagCache.upsert({
+                    where: { imageHash: input.hash },
+                    create: {
+                      imageHash: input.hash,
+                      archetypePrimary: tagResult.tags.archetypePrimary,
+                      archetypeSecondary: tagResult.tags.archetypeSecondary,
+                      silhouette: JSON.stringify(tagResult.tags.silhouette),
+                      formality: tagResult.tags.formality,
+                      colorFamily: JSON.stringify(tagResult.tags.colorFamily),
+                      fabric: tagResult.tags.fabric,
+                      textureNotes: tagResult.tags.textureNotes,
+                      confidence: tagResult.tags.confidence,
+                    },
+                    update: {},
+                  });
+                } catch (err) {
+                  // Non-fatal: the tags are already computed and usable for
+                  // this request regardless of whether the cache write
+                  // succeeds. In production the DB file lives in /tmp (see
+                  // lib/db/prisma.ts) -- if that's unavailable, writes fail
+                  // but reads still work; without this guard, an unhandled
+                  // rejection here would take down the whole Promise.all
+                  // over ALL images in this request, not just this one.
+                  console.error(
+                    JSON.stringify({
+                      event: "tag_cache_write_failed",
+                      hash: input.hash,
+                      error: String((err as Error)?.message ?? err),
+                    }),
+                  );
+                }
                 result = {
                   clientId: input.clientId,
                   label: input.label,
