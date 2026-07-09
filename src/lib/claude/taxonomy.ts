@@ -140,15 +140,15 @@ export function isArchetype(value: unknown): value is Archetype {
   return typeof value === "string" && (ARCHETYPES as readonly string[]).includes(value);
 }
 
-function isSilhouette(value: unknown): value is Silhouette {
+export function isSilhouette(value: unknown): value is Silhouette {
   return typeof value === "string" && (SILHOUETTES as readonly string[]).includes(value);
 }
 
-function isFormality(value: unknown): value is Formality {
+export function isFormality(value: unknown): value is Formality {
   return typeof value === "string" && (FORMALITIES as readonly string[]).includes(value);
 }
 
-function isColorFamily(value: unknown): value is ColorFamily {
+export function isColorFamily(value: unknown): value is ColorFamily {
   return typeof value === "string" && (COLOR_FAMILIES as readonly string[]).includes(value);
 }
 

@@ -253,9 +253,27 @@ export async function POST(request: NextRequest) {
       );
 
       if (successfullyTagged.length < MIN_IMAGES) {
+        // Name the actual causes (duplicates, invalid files, classification
+        // failures) rather than a flat "could be classified" count -- a user
+        // whose shortfall came from duplicates, not bad photos, was
+        // previously told "0 of 0 could be classified", which reads as a
+        // tagging failure and sends them looking for a problem that isn't
+        // there.
+        const tagFailedCount = uniqueInputs.length - successfullyTagged.length;
+        const reasons: string[] = [];
+        if (duplicates.length > 0) {
+          reasons.push(`${duplicates.length} duplicate${duplicates.length > 1 ? "s" : ""}`);
+        }
+        if (failed.length > 0) {
+          reasons.push(`${failed.length} invalid file${failed.length > 1 ? "s" : ""}`);
+        }
+        if (tagFailedCount > 0) {
+          reasons.push(`${tagFailedCount} couldn't be classified`);
+        }
+        const reasonSuffix = reasons.length > 0 ? ` (${reasons.join(", ")})` : "";
         fail(
-          `Only ${successfullyTagged.length} of ${uniqueInputs.length} images could be classified; at least ${MIN_IMAGES} are required. Try different images.`,
-          { images: taggedResults, failed },
+          `Only ${successfullyTagged.length} of your ${totalSubmitted} photos could be used${reasonSuffix}. At least ${MIN_IMAGES} usable photos are required — try adding a few more.`,
+          { images: taggedResults, failed, duplicates },
         );
         return;
       }
@@ -266,7 +284,8 @@ export async function POST(request: NextRequest) {
 
       const cacheHits = taggedResults.filter((r) => r.status === "cache_hit").length;
       const freshlyTagged = taggedResults.filter((r) => r.status === "tagged").length;
-      const tagFailed = taggedResults.filter((r) => r.status === "tag_failed").length;
+      const tagFailedResults = taggedResults.filter((r) => r.status === "tag_failed");
+      const tagFailed = tagFailedResults.length;
       const totalLatencyMs = Date.now() - totalStart;
 
       console.log(
@@ -295,7 +314,19 @@ export async function POST(request: NextRequest) {
         type: "done",
         styleDNA,
         images: taggedResults,
-        skipped: { invalid: failed, duplicates },
+        // tagFailed is surfaced here (not just logged) so a photo that
+        // silently dropped out of the profile due to an API hiccup is
+        // disclosed to the user the same way an invalid file or duplicate
+        // is -- previously it just vanished from the count with no trace.
+        skipped: {
+          invalid: failed,
+          duplicates,
+          tagFailed: tagFailedResults.map((r) => ({
+            clientId: r.clientId,
+            label: r.label,
+            reason: r.reason ?? "classification failed",
+          })),
+        },
         counts: {
           submitted: totalSubmitted,
           valid: resolved.length,

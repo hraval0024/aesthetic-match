@@ -1,3 +1,5 @@
+import { LandingCTA } from "@/components/LandingCTA";
+
 const steps = [
   {
     number: "01",
@@ -44,17 +46,8 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="mt-16 flex flex-col items-center gap-4">
-          <a
-            href="/profile"
-            className="inline-flex items-center justify-center rounded-full bg-stone-900 px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900"
-          >
-            Build My StyleDNA
-          </a>
-          <p className="text-xs text-stone-400">
-            Most brands here sync automatically to your Shop App — a few may
-            require a manual visit to check out.
-          </p>
+        <div className="mt-16">
+          <LandingCTA />
         </div>
       </div>
     </main>
