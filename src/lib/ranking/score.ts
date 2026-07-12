@@ -1,4 +1,4 @@
-import type { Archetype, ColorFamily, Formality, Silhouette } from "../claude/taxonomy";
+import type { Archetype, Category, Climate, ColorFamily, Formality, Occasion, Silhouette, Subcategory } from "../claude/taxonomy";
 
 export type ProductTags = {
   archetypePrimary: Archetype;
@@ -6,6 +6,15 @@ export type ProductTags = {
   silhouette: Silhouette[];
   colorFamily: ColorFamily[];
   formality: Formality;
+  // Product-context fields, not used by scoreProduct's formula below --
+  // consumed by rank.ts's hard filters (category/subcategory) and the
+  // strict-first/graceful-relaxation gate (occasion/climate). Kept on the
+  // same tags type as everything else since they're all AI-classified
+  // attributes of the product; see CatalogTags in taxonomy.ts.
+  category: Category;
+  subcategory: Subcategory;
+  occasion: Occasion[];
+  climate: Climate;
 };
 
 export type StyleDNAInput = {
@@ -25,15 +34,23 @@ export type ScoreBreakdown = {
   total: number;
   matchedSilhouette: string[];
   matchedColorFamily: string[];
-  /** "primary" = product's archetype_primary matches the profile's primary.
-   * "secondary_broadened" = product's archetype_primary matches the
-   * profile's *secondary* -- this is the broadening mechanism (pulls in
-   * more candidates) rather than requiring both to match (which would
-   * narrow). "none" = no archetype relationship at all, which is a hard
-   * exclusion (see rank.ts) since PROJECT.md weights archetype_primary
-   * heaviest and prioritizing it means an archetype-irrelevant item is
-   * never a real recommendation regardless of other overlap. */
-  archetypeMatchType: "primary" | "secondary_broadened" | "none";
+  /** Strongest tier that matched, for rationale text only -- does not by
+   * itself decide the hard filter (see hasArchetypeOverlap). "primary" =
+   * product.primary == profile.primary. "secondary_broadened" =
+   * product.primary == profile.secondary. "blend_primary" =
+   * product.secondary == profile.primary. "blend_secondary" =
+   * product.secondary == profile.secondary. "none" = no tier matched. */
+  archetypeMatchType: "primary" | "secondary_broadened" | "blend_primary" | "blend_secondary" | "none";
+  /** The actual hard-filter signal (see rank.ts): true if ANY of the four
+   * tiers above matched -- i.e. {profile.primary, profile.secondary} and
+   * {product.primary, product.secondary} share at least one value. Revised
+   * from an earlier version that only checked product.primary against the
+   * profile: a product whose SECONDARY echoed the user's primary/secondary
+   * was being excluded outright even though it's a real, meaningful
+   * overlap (e.g. profile primary=clean_girl_minimal/secondary=old_money
+   * should still surface a product with primary=scandi_minimal/
+   * secondary=clean_girl_minimal, not lose it to the gate). */
+  hasArchetypeOverlap: boolean;
 };
 
 // archetype_primary heaviest, silhouette/formality medium, color_family
@@ -67,25 +84,31 @@ function jaccard(a: string[], b: string[]): { overlap: number; matched: string[]
 /** Exact enum matches only (PROJECT.md); fabric/texture excluded entirely. */
 export function scoreProduct(profile: StyleDNAInput, product: ProductTags): ScoreBreakdown {
   let archetypeScore = 0;
-  let archetypeMatchType: ScoreBreakdown["archetypeMatchType"] = "none";
+  let primaryMatchType: "primary" | "secondary_broadened" | "none" = "none";
   if (product.archetypePrimary === profile.archetypePrimary) {
     archetypeScore = WEIGHTS.archetypePrimary;
-    archetypeMatchType = "primary";
+    primaryMatchType = "primary";
   } else if (profile.archetypeSecondary && product.archetypePrimary === profile.archetypeSecondary) {
     archetypeScore = WEIGHTS.archetypeSecondaryBroaden;
-    archetypeMatchType = "secondary_broadened";
+    primaryMatchType = "secondary_broadened";
   }
 
   let blendBonus = 0;
+  let blendMatchType: "blend_primary" | "blend_secondary" | "none" = "none";
   if (product.archetypeSecondary === profile.archetypePrimary) {
     blendBonus = WEIGHTS.blendBonusPrimary;
+    blendMatchType = "blend_primary";
   } else if (
     profile.archetypeSecondary &&
     product.archetypeSecondary &&
     product.archetypeSecondary === profile.archetypeSecondary
   ) {
     blendBonus = WEIGHTS.blendBonusSecondary;
+    blendMatchType = "blend_secondary";
   }
+
+  const hasArchetypeOverlap = archetypeScore > 0 || blendBonus > 0;
+  const archetypeMatchType = primaryMatchType !== "none" ? primaryMatchType : blendMatchType;
 
   const silhouette = jaccard(profile.silhouette, product.silhouette);
   const silhouetteScore = silhouette.overlap * WEIGHTS.silhouette;
@@ -105,5 +128,6 @@ export function scoreProduct(profile: StyleDNAInput, product: ProductTags): Scor
     matchedSilhouette: silhouette.matched,
     matchedColorFamily: color.matched,
     archetypeMatchType,
+    hasArchetypeOverlap,
   };
 }

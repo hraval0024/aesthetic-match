@@ -1,0 +1,16 @@
+# .env must never reach the deployed bundle. Next.js auto-loads any .env
+# file present in the project root at build AND runtime -- if this local
+# dev file (DATABASE_URL="file:./prisma/dev.db") were uploaded, it would
+# override the production DB-resolution logic in src/lib/db/prisma.ts and
+# point at a dev.db that doesn't exist in the deployment (dev.db is
+# gitignored, never committed). Confirmed as a real bug via a live 500:
+# ConnectionFailed("Unable to open connection to local database ./prisma/dev.db").
+.env
+.env.local
+.env.*.local
+
+# Local scratch DB and Vercel CLI project-link metadata -- neither belongs
+# in the uploaded source.
+prisma/dev.db
+prisma/dev.db-journal
+.vercel

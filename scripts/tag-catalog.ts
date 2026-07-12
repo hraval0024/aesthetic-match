@@ -9,7 +9,7 @@ import "dotenv/config";
 import fs from "node:fs";
 import path from "node:path";
 import { prisma } from "../src/lib/db/prisma";
-import { tagImage } from "../src/lib/claude/tagImage";
+import { tagCatalogImage } from "../src/lib/claude/tagImage";
 import { hashImage } from "../src/lib/images/hash";
 import { createLimiter } from "../src/lib/concurrency/limiter";
 
@@ -70,7 +70,7 @@ async function tagProduct(product: {
   }
 
   const start = Date.now();
-  const result = await tagImage(bytes, mediaType);
+  const result = await tagCatalogImage(bytes, mediaType);
   const claudeLatencyMs = Date.now() - start;
 
   if (!result.ok) {
@@ -97,6 +97,10 @@ async function tagProduct(product: {
       fabric: result.tags.fabric,
       textureNotes: result.tags.textureNotes,
       confidence: result.tags.confidence,
+      category: result.tags.category,
+      subcategory: result.tags.subcategory,
+      occasion: JSON.stringify(result.tags.occasion),
+      climate: result.tags.climate,
     },
     update: {},
   });

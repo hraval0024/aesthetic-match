@@ -3,10 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { summarizeStyleDNA } from "@/lib/profile/summarize";
-import { COLOR_SWATCHES } from "@/lib/ui/colorSwatches";
 import { saveImages, loadImages, clearImages } from "@/lib/ui/imageStore";
-import { setStyleDNA } from "@/lib/ui/localPersistence";
+import {
+  setStyleDNA,
+  setShoppingIntent,
+  setProfileNotice,
+  getShoppingIntentText,
+  setShoppingIntentText as persistShoppingIntentText,
+} from "@/lib/ui/localPersistence";
 import { AppHeader } from "@/components/AppHeader";
 
 const MIN_IMAGES = 5;
@@ -38,6 +42,7 @@ type ProfileResult = {
     tagFailed: { clientId: string; label: string; reason: string }[];
   };
   counts: Record<string, number>;
+  shoppingIntent: { occasion: string[]; climate: string | null } | null;
 };
 
 type Progress = { stage: string; message: string; completed?: number; total?: number };
@@ -93,7 +98,7 @@ function StepIndicator({ progress }: { progress: Progress | null }) {
                 <span className="absolute inset-0 rounded-full bg-stone-900 motion-safe:animate-ping motion-safe:opacity-60" />
               )}
             </span>
-            <span className={state === "pending" ? "text-stone-400" : "text-stone-800"}>{label}</span>
+            <span className={state === "pending" ? "text-stone-500" : "text-stone-800"}>{label}</span>
           </div>
         );
       })}
@@ -108,7 +113,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState<Progress | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<ProfileResult | null>(null);
+  const [shoppingIntentText, setShoppingIntentText] = useState("");
 
   const totalCount = entries.length;
   const canSubmit = totalCount >= MIN_IMAGES && totalCount <= MAX_IMAGES && !loading;
@@ -120,6 +125,11 @@ export default function ProfilePage() {
   // regenerated fresh from the persisted File blobs rather than reused.
   const hasLoadedRef = useRef(false);
   useEffect(() => {
+    // Rehydrate the raw shopping-intent phrase too, not just photos -- this
+    // is what makes "Edit photos or intent" (linked from /recommendations)
+    // actually let someone edit their intent: without it, the textarea was
+    // always blank on return even if they'd typed something before.
+    setShoppingIntentText(getShoppingIntentText());
     loadImages()
       .then((stored) => {
         hasLoadedRef.current = true;
@@ -144,26 +154,16 @@ export default function ProfilePage() {
     saveImages(entries.map((e) => ({ clientId: e.clientId, file: e.file }))).catch(() => {});
   }, [entries]);
 
-  // A StyleDNA result reflects the exact photo set it was built from --
-  // changing that set (add or remove) makes the displayed result stale and
-  // silently wrong, not just outdated. Invalidate it immediately rather
-  // than leaving it on screen until the user notices and re-submits.
-  function invalidateStaleResult() {
-    if (result) setResult(null);
-    if (error) setError(null);
-  }
-
   function addFiles(fileList: FileList | File[]) {
     // Guard against editing while a submission is in flight -- its FormData
     // snapshot is already locked in, so an edit here wouldn't affect that
-    // request but WOULD create the same stale-result mismatch once it
-    // completes, just via a different path than the one just fixed above.
+    // request.
     if (loading) return;
     const all = Array.from(fileList);
     const picked = all.filter((f) => ACCEPTED_TYPES.includes(f.type));
     const rejectedCount = all.length - picked.length;
 
-    invalidateStaleResult();
+    if (error) setError(null);
 
     // Previously a drop with zero supported files (e.g. HEIC photos
     // straight off an iPhone, which have MIME type image/heic -- not in
@@ -202,21 +202,9 @@ export default function ProfilePage() {
     if (e.dataTransfer.files) addFiles(e.dataTransfer.files);
   }
 
-  function handleSeeRecommendations() {
-    if (!result) return;
-    const saved = setStyleDNA(result.styleDNA);
-    if (!saved) {
-      setError(
-        "We couldn't save your StyleDNA in this browser (private browsing or storage may be disabled). Try a normal browsing window.",
-      );
-      return;
-    }
-    router.push("/recommendations");
-  }
-
   function removeEntry(clientId: string) {
     if (loading) return;
-    invalidateStaleResult();
+    if (error) setError(null);
     setEntries((prev) => {
       const target = prev.find((e) => e.clientId === clientId);
       if (target) URL.revokeObjectURL(target.thumb);
@@ -227,7 +215,6 @@ export default function ProfilePage() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
-    setResult(null);
     setProgress(null);
     setLoading(true);
 
@@ -239,6 +226,7 @@ export default function ProfilePage() {
       formData.append("images", entry.file);
     }
     formData.append("clientIds", JSON.stringify(clientIds));
+    formData.append("shoppingIntent", shoppingIntentText.trim());
 
     let pendingResult: ProfileResult | null = null;
     let pendingError: string | null = null;
@@ -313,10 +301,40 @@ export default function ProfilePage() {
     } catch (err) {
       pendingError = err instanceof Error ? err.message : "Network error — check your connection and try again.";
     } finally {
-      if (pendingResult) setResult(pendingResult);
-      if (pendingError) setError(pendingError);
       setLoading(false);
       setProgress(null);
+
+      if (pendingResult) {
+        const saved = setStyleDNA(pendingResult.styleDNA);
+        // Always set, even when null/empty -- a stale intent from an
+        // earlier profile shouldn't linger just because this submission
+        // didn't type a new one. Same for the raw text (used to rehydrate
+        // this field on return, and to show "Showing results for ..." on
+        // recommendations) -- an empty submission should clear a stale
+        // phrase from before, not leave it lingering.
+        setShoppingIntent(pendingResult.shoppingIntent ?? { occasion: [], climate: null });
+        persistShoppingIntentText(shoppingIntentText.trim());
+
+        const skippedCount =
+          pendingResult.skipped.invalid.length +
+          pendingResult.skipped.duplicates.length +
+          pendingResult.skipped.tagFailed.length;
+        if (skippedCount > 0) {
+          setProfileNotice(
+            `${skippedCount} of your ${pendingResult.counts.submitted} photos couldn't be used — your StyleDNA is built from the rest.`,
+          );
+        }
+
+        if (saved) {
+          router.push("/recommendations");
+        } else {
+          setError(
+            "We couldn't save your StyleDNA in this browser (private browsing or storage may be disabled). Try a normal browsing window.",
+          );
+        }
+      } else if (pendingError) {
+        setError(pendingError);
+      }
     }
   }
 
@@ -325,10 +343,11 @@ export default function ProfilePage() {
       <AppHeader />
       <div className="mx-auto w-full max-w-xl px-6 pt-10">
         <div className="text-center">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-stone-400">StyleDNA</p>
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-stone-500">StyleDNA</p>
           <h1 className="mt-3 text-3xl font-medium tracking-tight sm:text-4xl">Build your profile</h1>
           <p className="mx-auto mt-3 max-w-sm text-[15px] text-stone-500">
-            Upload {MIN_IMAGES}–{MAX_IMAGES} fashion inspiration photos — screenshots of outfits you love.
+            Upload {MIN_IMAGES}–{MAX_IMAGES} outfits you love. We&rsquo;ll identify the patterns that define
+            your personal style.
           </p>
         </div>
 
@@ -353,11 +372,11 @@ export default function ProfilePage() {
                 className="absolute inset-0 cursor-pointer opacity-0"
                 aria-label="Upload photos"
               />
-              <div className="text-stone-400">
+              <div className="text-stone-500">
                 <UploadIcon />
               </div>
               <p className="mt-3 text-sm font-medium text-stone-900">Drag photos here, or click to browse</p>
-              <p className="mt-1 text-xs text-stone-400">JPG, PNG, GIF, or WEBP</p>
+              <p className="mt-1 text-xs text-stone-500">JPG, PNG, GIF, or WEBP</p>
             </div>
           ) : (
             <div
@@ -381,7 +400,7 @@ export default function ProfilePage() {
                 </div>
               ))}
               {entries.length < MAX_IMAGES && (
-                <label className="relative flex aspect-[4/5] cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-stone-300 text-stone-400 transition-colors hover:border-stone-400 hover:text-stone-600">
+                <label className="relative flex aspect-[4/5] cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-stone-300 text-stone-500 transition-colors hover:border-stone-400 hover:text-stone-600">
                   <input
                     type="file"
                     accept={ACCEPTED_TYPES.join(",")}
@@ -397,15 +416,34 @@ export default function ProfilePage() {
             </div>
           )}
 
+          <div>
+            <label htmlFor="shopping-intent" className="block text-sm font-medium text-stone-900">
+              What are you shopping for? <span className="font-normal text-stone-500">(optional)</span>
+            </label>
+            <p className="mt-1 text-[13px] text-stone-500">
+              Tell us the occasion and we&rsquo;ll tailor your matches to it — no need to browse categories.
+            </p>
+            <textarea
+              id="shopping-intent"
+              value={shoppingIntentText}
+              onChange={(e) => setShoppingIntentText(e.target.value)}
+              disabled={loading}
+              rows={2}
+              maxLength={200}
+              placeholder={"summer trip to Italy\ndate night this weekend"}
+              className="mt-3 w-full resize-none rounded-xl border border-stone-300 px-4 py-3 text-sm text-stone-900 placeholder:text-stone-400 transition-colors focus:border-stone-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900 disabled:bg-stone-50 disabled:text-stone-400"
+            />
+          </div>
+
           <div className="flex flex-col items-center gap-3">
             <button
               type="submit"
               disabled={!canSubmit}
               className="inline-flex items-center justify-center rounded-full bg-stone-900 px-7 py-2.5 text-sm font-medium text-white transition-colors hover:bg-stone-700 disabled:cursor-not-allowed disabled:bg-stone-200 disabled:text-stone-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900"
             >
-              Build My StyleDNA
+              Find my outfits
             </button>
-            <span className={`text-xs ${totalCount > MAX_IMAGES ? "text-red-700" : "text-stone-400"}`}>
+            <span className={`text-xs ${totalCount > MAX_IMAGES ? "text-red-700" : "text-stone-500"}`}>
               {totalCount} of {MIN_IMAGES}–{MAX_IMAGES} photos
             </span>
           </div>
@@ -416,120 +454,6 @@ export default function ProfilePage() {
         {error && (
           <div className="mt-8 rounded-lg border border-red-200 bg-red-50/60 p-4 text-sm text-red-800">
             {error}
-          </div>
-        )}
-
-        {result && (
-          <div className="mt-12 space-y-6">
-            {(result.skipped.invalid.length > 0 ||
-              result.skipped.duplicates.length > 0 ||
-              result.skipped.tagFailed.length > 0) && (
-              <div className="rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm text-stone-600">
-                <p className="font-medium text-stone-800">
-                  {result.skipped.invalid.length + result.skipped.duplicates.length + result.skipped.tagFailed.length}{" "}
-                  of your {result.counts.submitted} photos couldn&rsquo;t be used — your profile below is built
-                  from the rest.
-                </p>
-                <ul className="mt-1.5 space-y-0.5 text-xs text-stone-500">
-                  {result.skipped.invalid.map((s, i) => (
-                    <li key={`invalid-${i}`} className="truncate" title={s.label}>
-                      &ldquo;{s.label}&rdquo; — {s.reason}
-                      {s.detail ? ` (${s.detail})` : ""}
-                    </li>
-                  ))}
-                  {result.skipped.duplicates.map((s, i) => (
-                    <li key={`dup-${i}`} className="truncate" title={s.label}>
-                      &ldquo;{s.label}&rdquo; — duplicate of another photo you uploaded
-                    </li>
-                  ))}
-                  {result.skipped.tagFailed.map((s, i) => (
-                    <li key={`tagfailed-${i}`} className="truncate" title={s.label}>
-                      &ldquo;{s.label}&rdquo; — couldn&rsquo;t be classified, try a clearer photo
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            <section className="border-t border-stone-200 pt-10 text-center">
-              <p className="text-xs font-medium uppercase tracking-[0.2em] text-stone-400">Your StyleDNA</p>
-              <h2 className="mt-3 text-4xl font-medium capitalize tracking-tight sm:text-5xl">
-                {result.styleDNA.archetypePrimary.replace(/_/g, " ")}
-              </h2>
-              {result.styleDNA.archetypeSecondary && (
-                <p className="mt-2 text-sm text-stone-500">
-                  with a touch of{" "}
-                  <span className="font-medium text-stone-700">
-                    {result.styleDNA.archetypeSecondary.replace(/_/g, " ")}
-                  </span>
-                </p>
-              )}
-              <p className="mx-auto mt-5 max-w-md text-[15px] leading-relaxed text-stone-600">
-                {summarizeStyleDNA(result.styleDNA)}
-              </p>
-
-              <div className="mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 border-t border-stone-200 pt-8 text-left sm:grid-cols-3 sm:gap-6">
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-stone-400">Silhouette</p>
-                  <p className="mt-2 text-sm capitalize text-stone-700">
-                    {result.styleDNA.silhouette.length
-                      ? result.styleDNA.silhouette.map((s) => s.replace(/_/g, " ")).join(", ")
-                      : "Mixed"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-stone-400">Palette</p>
-                  <div className="mt-2 flex flex-wrap items-center gap-2">
-                    {result.styleDNA.colorFamily.length ? (
-                      result.styleDNA.colorFamily.map((c) => (
-                        <span key={c} className="flex items-center gap-1.5">
-                          <span
-                            className="h-3 w-3 rounded-full border border-black/10"
-                            style={{ backgroundColor: COLOR_SWATCHES[c] ?? "#ccc" }}
-                          />
-                          <span className="text-sm capitalize text-stone-700">{c.replace(/_/g, " ")}</span>
-                        </span>
-                      ))
-                    ) : (
-                      <span className="text-sm text-stone-700">Mixed</span>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-stone-400">Formality</p>
-                  <p className="mt-2 text-sm capitalize text-stone-700">
-                    {result.styleDNA.formality.replace(/_/g, " ")}
-                  </p>
-                </div>
-              </div>
-
-              <p className="mt-10 text-xs text-stone-400">
-                Based on {result.styleDNA.sourceImageCount} photos
-              </p>
-
-              <div className="mt-8 flex flex-col items-center gap-3">
-                <button
-                  type="button"
-                  onClick={handleSeeRecommendations}
-                  className="inline-flex items-center justify-center rounded-full bg-stone-900 px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900"
-                >
-                  See My Recommendations
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    entries.forEach((e) => URL.revokeObjectURL(e.thumb));
-                    setEntries([]);
-                    setResult(null);
-                    setError(null);
-                    clearImages().catch(() => {});
-                  }}
-                  className="text-xs text-stone-400 underline decoration-stone-300 underline-offset-4 transition-colors hover:text-stone-600"
-                >
-                  Start over with different photos
-                </button>
-              </div>
-            </section>
           </div>
         )}
       </div>

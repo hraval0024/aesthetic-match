@@ -14,3 +14,6 @@ src/generated/
 .gcloud/
 google-cloud-sdk/
 google-cloud-cli-*.tar.gz
+.vercel
+.env*
+*.tsbuildinfo

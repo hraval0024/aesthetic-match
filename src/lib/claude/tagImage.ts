@@ -1,6 +1,15 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import { anthropic } from "./client";
-import { TAG_TOOL, TAG_TOOL_NAME, validateTags, type ImageTags } from "./taxonomy";
+import {
+  TAG_TOOL,
+  TAG_TOOL_NAME,
+  PRODUCT_TAG_TOOL,
+  PRODUCT_TAG_TOOL_NAME,
+  validateTags,
+  validateCatalogTags,
+  type ImageTags,
+  type CatalogTags,
+} from "./taxonomy";
 import { SUPPORTED_IMAGE_MEDIA_TYPES } from "../images/validate";
 
 // Classification task with a forced single tool call and an enum-constrained
@@ -83,6 +92,87 @@ export async function tagImage(
         detail: String((err as Error)?.message ?? err),
       };
       // API error -- fall through to retry
+    }
+  }
+
+  return lastFailure;
+}
+
+export type TagCatalogImageResult =
+  | { ok: true; tags: CatalogTags }
+  | {
+      ok: false;
+      reason: "unsupported_media_type" | "schema_validation_failed" | "api_error";
+      detail?: string;
+    };
+
+async function callClaudeForCatalog(imageBytes: Buffer, mediaType: string) {
+  const response = await anthropic.messages.create({
+    model: MODEL,
+    // Larger than the StyleDNA-photo call's 1024 -- four extra fields
+    // (category/subcategory/occasion/climate) need more output headroom.
+    max_tokens: 1536,
+    thinking: { type: "disabled" },
+    output_config: { effort: "low" },
+    tool_choice: { type: "tool", name: PRODUCT_TAG_TOOL_NAME },
+    tools: [PRODUCT_TAG_TOOL as unknown as Anthropic.Tool],
+    messages: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "image",
+            source: {
+              type: "base64",
+              media_type: mediaType as "image/jpeg" | "image/png" | "image/gif" | "image/webp",
+              data: imageBytes.toString("base64"),
+            },
+          },
+          {
+            type: "text",
+            text: "Classify this catalog product image using the tag_catalog_product_image tool.",
+          },
+        ],
+      },
+    ],
+  });
+
+  const toolUse = response.content.find(
+    (block): block is Anthropic.ToolUseBlock => block.type === "tool_use",
+  );
+  return toolUse?.input;
+}
+
+/**
+ * Same retry-once-and-report pattern as tagImage, extended for the catalog
+ * schema (category/subcategory/occasion/climate on top of the style
+ * fields). Deliberately a separate function/tool rather than a flag on
+ * tagImage -- the StyleDNA-photo path (tagImage) never needs these fields
+ * (aggregateStyleDNA doesn't read them), so keeping it on its own smaller
+ * schema keeps that latency-sensitive user-facing call cheap and fast.
+ */
+export async function tagCatalogImage(
+  imageBytes: Buffer,
+  mediaType: string,
+): Promise<TagCatalogImageResult> {
+  if (!SUPPORTED_IMAGE_MEDIA_TYPES.has(mediaType)) {
+    return { ok: false, reason: "unsupported_media_type" };
+  }
+
+  let lastFailure: TagCatalogImageResult = { ok: false, reason: "schema_validation_failed" };
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const rawInput = await callClaudeForCatalog(imageBytes, mediaType);
+      const tags = validateCatalogTags(rawInput);
+      if (tags) return { ok: true, tags };
+      lastFailure = { ok: false, reason: "schema_validation_failed" };
+    } catch (err) {
+      lastFailure = {
+        ok: false,
+        reason: "api_error",
+        detail: String((err as Error)?.message ?? err),
+      };
     }
   }
 

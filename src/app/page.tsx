@@ -23,7 +23,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-center bg-white px-6 py-20 text-stone-900">
       <div className="w-full max-w-2xl">
         <div className="text-center">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-stone-400">
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-stone-500">
             Aesthetic Match
           </p>
           <h1 className="mt-4 text-4xl font-medium tracking-tight text-stone-900 sm:text-5xl">

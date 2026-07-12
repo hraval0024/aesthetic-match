@@ -14,7 +14,7 @@ export function AppHeader({ showEditPhotos = false }: { showEditPhotos?: boolean
     <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 pb-2 pt-6">
       <a
         href="/"
-        className="text-xs font-medium uppercase tracking-[0.2em] text-stone-400 transition-colors hover:text-stone-600"
+        className="text-xs font-medium uppercase tracking-[0.2em] text-stone-500 transition-colors hover:text-stone-600"
       >
         Aesthetic Match
       </a>

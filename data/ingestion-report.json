@@ -1,232 +1,498 @@
 {
-  "generatedAt": "2026-07-08T20:06:05.038Z",
-  "storesAttempted": 34,
+  "generatedAt": "2026-07-10T03:41:40.916Z",
+  "storesAttempted": 56,
   "storesByStatus": {
-    "ok": 32,
+    "ok": 54,
     "blocked": 1,
     "disabled": 1,
     "error": 0
   },
-  "rawProductsFetched": 3200,
-  "normalizedProductsAvailable": 3112,
-  "globalCap": 200,
-  "finalCatalogSize": 200,
-  "finalCatalogByArchetype": {
-    "coastal_grandmother": 21,
-    "old_money": 28,
-    "clean_girl_minimal": 19,
-    "streetwear_athletic": 30,
-    "cottagecore_romantic": 18,
-    "scandi_minimal": 18,
-    "trend_forward": 30,
-    "edgy_alternative": 18,
-    "bohemian": 18
+  "rawProductsFetched": 22865,
+  "normalizedProductsAvailable": 22522,
+  "finalCatalogSize": 1900,
+  "archetypeCoverage": {
+    "coastal": {
+      "floor": 120,
+      "target": 170,
+      "cap": 190,
+      "achieved": 190,
+      "belowFloor": false,
+      "storeContributions": {
+        "fahertybrand.com": 38,
+        "faithfullthebrand.com": 38,
+        "solidandstriped.com": 38,
+        "mondayswimwear.com": 38,
+        "lablanca.com": 38
+      }
+    },
+    "old_money": {
+      "floor": 120,
+      "target": 170,
+      "cap": 190,
+      "achieved": 190,
+      "belowFloor": false,
+      "storeContributions": {
+        "rowingblazers.com": 38,
+        "alexmill.com": 38,
+        "kule.com": 38,
+        "draperjames.com": 38,
+        "americanleatherco.com": 38
+      }
+    },
+    "clean_girl_minimal": {
+      "floor": 120,
+      "target": 170,
+      "cap": 190,
+      "achieved": 190,
+      "belowFloor": false,
+      "storeContributions": {
+        "railsclothing.com": 38,
+        "cuyana.com": 38,
+        "thefrankieshop.com": 38,
+        "margauxny.com": 38,
+        "missoma.com": 38
+      }
+    },
+    "streetwear_athletic": {
+      "floor": 120,
+      "target": 170,
+      "cap": 190,
+      "achieved": 190,
+      "belowFloor": false,
+      "storeContributions": {
+        "outdoorvoices.com": 38,
+        "girlfriend.com": 38,
+        "aloyoga.com": 38,
+        "varley.com": 38,
+        "edikted.com": 38
+      }
+    },
+    "cottagecore_romantic": {
+      "floor": 120,
+      "target": 170,
+      "cap": 190,
+      "achieved": 190,
+      "belowFloor": false,
+      "storeContributions": {
+        "shopdoen.com": 28,
+        "loveshackfancy.com": 27,
+        "hillhousehome.com": 27,
+        "vintagemist.com": 27,
+        "amantine.com": 27,
+        "misspatina.com": 27,
+        "lacemade.com": 27
+      }
+    },
+    "scandi_minimal": {
+      "floor": 120,
+      "target": 170,
+      "cap": 190,
+      "achieved": 190,
+      "belowFloor": false,
+      "storeContributions": {
+        "rains.com": 48,
+        "stinegoya.com": 48,
+        "envelope1976.com": 47,
+        "stylein.com": 47
+      }
+    },
+    "trend_forward": {
+      "floor": 120,
+      "target": 170,
+      "cap": 190,
+      "achieved": 190,
+      "belowFloor": false,
+      "storeContributions": {
+        "fashionnova.com": 22,
+        "ohpolly.com": 21,
+        "whitefoxboutique.com": 21,
+        "dissh.com.au": 21,
+        "princesspolly.com.au": 21,
+        "dressthepopulation.com": 21,
+        "pinklily.com": 21,
+        "petalandpup.com": 21,
+        "bond-eye.com": 21
+      }
+    },
+    "edgy": {
+      "floor": 120,
+      "target": 170,
+      "cap": 190,
+      "achieved": 190,
+      "belowFloor": false,
+      "storeContributions": {
+        "dollskill.com": 64,
+        "killstar.com": 63,
+        "lazyoaf.com": 63
+      }
+    },
+    "bohemian": {
+      "floor": 120,
+      "target": 170,
+      "cap": 190,
+      "achieved": 190,
+      "belowFloor": false,
+      "storeContributions": {
+        "spell.co": 38,
+        "augustethelabel.com": 38,
+        "showmeyourmumu.com": 38,
+        "threebirdnest.com": 38,
+        "bohobeachhut.com": 38
+      }
+    },
+    "classic": {
+      "floor": 120,
+      "target": 170,
+      "cap": 190,
+      "achieved": 190,
+      "belowFloor": false,
+      "storeContributions": {
+        "boden.com": 34,
+        "jmclaughlin.com": 33,
+        "grammarnyc.com": 24,
+        "mgemi.com": 33,
+        "laticoleathers.com": 33,
+        "sameswim.com": 33
+      }
+    }
   },
   "finalCatalogByStore": [
     {
       "domain": "fahertybrand.com",
-      "archetype": "coastal_grandmother",
-      "contributed": 7,
-      "available": 100
+      "archetype": "coastal",
+      "contributed": 38,
+      "available": 500
     },
     {
       "domain": "faithfullthebrand.com",
-      "archetype": "coastal_grandmother",
-      "contributed": 7,
-      "available": 100
+      "archetype": "coastal",
+      "contributed": 38,
+      "available": 500
     },
     {
       "domain": "solidandstriped.com",
-      "archetype": "coastal_grandmother",
-      "contributed": 7,
-      "available": 100
+      "archetype": "coastal",
+      "contributed": 38,
+      "available": 500
+    },
+    {
+      "domain": "mondayswimwear.com",
+      "archetype": "coastal",
+      "contributed": 38,
+      "available": 500
+    },
+    {
+      "domain": "lablanca.com",
+      "archetype": "coastal",
+      "contributed": 38,
+      "available": 250
     },
     {
       "domain": "rowingblazers.com",
       "archetype": "old_money",
-      "contributed": 7,
-      "available": 100
+      "contributed": 38,
+      "available": 500
     },
     {
       "domain": "alexmill.com",
       "archetype": "old_money",
-      "contributed": 7,
-      "available": 100
+      "contributed": 38,
+      "available": 500
     },
     {
       "domain": "kule.com",
       "archetype": "old_money",
-      "contributed": 7,
-      "available": 100
+      "contributed": 38,
+      "available": 331
     },
     {
       "domain": "draperjames.com",
       "archetype": "old_money",
-      "contributed": 7,
-      "available": 100
+      "contributed": 38,
+      "available": 499
+    },
+    {
+      "domain": "americanleatherco.com",
+      "archetype": "old_money",
+      "contributed": 38,
+      "available": 222
     },
     {
       "domain": "railsclothing.com",
       "archetype": "clean_girl_minimal",
-      "contributed": 7,
-      "available": 100
+      "contributed": 38,
+      "available": 499
     },
     {
       "domain": "cuyana.com",
       "archetype": "clean_girl_minimal",
-      "contributed": 6,
-      "available": 100
+      "contributed": 38,
+      "available": 452
     },
     {
       "domain": "thefrankieshop.com",
       "archetype": "clean_girl_minimal",
-      "contributed": 6,
-      "available": 100
+      "contributed": 38,
+      "available": 497
+    },
+    {
+      "domain": "margauxny.com",
+      "archetype": "clean_girl_minimal",
+      "contributed": 38,
+      "available": 198
+    },
+    {
+      "domain": "missoma.com",
+      "archetype": "clean_girl_minimal",
+      "contributed": 38,
+      "available": 500
     },
     {
       "domain": "outdoorvoices.com",
       "archetype": "streetwear_athletic",
-      "contributed": 6,
-      "available": 100
+      "contributed": 38,
+      "available": 466
     },
     {
       "domain": "girlfriend.com",
       "archetype": "streetwear_athletic",
-      "contributed": 6,
-      "available": 100
+      "contributed": 38,
+      "available": 166
     },
     {
       "domain": "aloyoga.com",
       "archetype": "streetwear_athletic",
-      "contributed": 6,
-      "available": 100
+      "contributed": 38,
+      "available": 500
     },
     {
       "domain": "varley.com",
       "archetype": "streetwear_athletic",
-      "contributed": 6,
-      "available": 100
+      "contributed": 38,
+      "available": 500
     },
     {
       "domain": "edikted.com",
       "archetype": "streetwear_athletic",
-      "contributed": 6,
-      "available": 100
+      "contributed": 38,
+      "available": 500
     },
     {
       "domain": "shopdoen.com",
       "archetype": "cottagecore_romantic",
-      "contributed": 6,
-      "available": 26
+      "contributed": 28,
+      "available": 425
     },
     {
       "domain": "loveshackfancy.com",
       "archetype": "cottagecore_romantic",
-      "contributed": 6,
-      "available": 100
+      "contributed": 27,
+      "available": 500
     },
     {
       "domain": "hillhousehome.com",
       "archetype": "cottagecore_romantic",
-      "contributed": 6,
-      "available": 100
+      "contributed": 27,
+      "available": 499
+    },
+    {
+      "domain": "vintagemist.com",
+      "archetype": "cottagecore_romantic",
+      "contributed": 27,
+      "available": 162
+    },
+    {
+      "domain": "amantine.com",
+      "archetype": "cottagecore_romantic",
+      "contributed": 27,
+      "available": 153
+    },
+    {
+      "domain": "misspatina.com",
+      "archetype": "cottagecore_romantic",
+      "contributed": 27,
+      "available": 500
+    },
+    {
+      "domain": "lacemade.com",
+      "archetype": "cottagecore_romantic",
+      "contributed": 27,
+      "available": 500
     },
     {
       "domain": "rains.com",
       "archetype": "scandi_minimal",
-      "contributed": 6,
-      "available": 100
+      "contributed": 48,
+      "available": 297
     },
     {
       "domain": "stinegoya.com",
       "archetype": "scandi_minimal",
-      "contributed": 6,
-      "available": 100
+      "contributed": 48,
+      "available": 477
     },
     {
       "domain": "envelope1976.com",
       "archetype": "scandi_minimal",
-      "contributed": 6,
-      "available": 100
+      "contributed": 47,
+      "available": 128
+    },
+    {
+      "domain": "stylein.com",
+      "archetype": "scandi_minimal",
+      "contributed": 47,
+      "available": 494
     },
     {
       "domain": "fashionnova.com",
       "archetype": "trend_forward",
-      "contributed": 6,
-      "available": 100
+      "contributed": 22,
+      "available": 500
     },
     {
       "domain": "ohpolly.com",
       "archetype": "trend_forward",
-      "contributed": 6,
-      "available": 99
+      "contributed": 21,
+      "available": 499
     },
     {
       "domain": "whitefoxboutique.com",
       "archetype": "trend_forward",
-      "contributed": 6,
-      "available": 100
+      "contributed": 21,
+      "available": 500
     },
     {
       "domain": "dissh.com.au",
       "archetype": "trend_forward",
-      "contributed": 6,
-      "available": 100
+      "contributed": 21,
+      "available": 500
     },
     {
       "domain": "princesspolly.com.au",
       "archetype": "trend_forward",
-      "contributed": 6,
-      "available": 100
+      "contributed": 21,
+      "available": 500
+    },
+    {
+      "domain": "dressthepopulation.com",
+      "archetype": "trend_forward",
+      "contributed": 21,
+      "available": 500
+    },
+    {
+      "domain": "pinklily.com",
+      "archetype": "trend_forward",
+      "contributed": 21,
+      "available": 498
+    },
+    {
+      "domain": "petalandpup.com",
+      "archetype": "trend_forward",
+      "contributed": 21,
+      "available": 500
+    },
+    {
+      "domain": "bond-eye.com",
+      "archetype": "trend_forward",
+      "contributed": 21,
+      "available": 230
     },
     {
       "domain": "dollskill.com",
-      "archetype": "edgy_alternative",
-      "contributed": 6,
-      "available": 100
+      "archetype": "edgy",
+      "contributed": 64,
+      "available": 500
     },
     {
       "domain": "killstar.com",
-      "archetype": "edgy_alternative",
-      "contributed": 6,
-      "available": 100
+      "archetype": "edgy",
+      "contributed": 63,
+      "available": 500
     },
     {
       "domain": "lazyoaf.com",
-      "archetype": "edgy_alternative",
-      "contributed": 6,
-      "available": 100
+      "archetype": "edgy",
+      "contributed": 63,
+      "available": 500
     },
     {
       "domain": "spell.co",
       "archetype": "bohemian",
-      "contributed": 6,
-      "available": 100
+      "contributed": 38,
+      "available": 349
     },
     {
       "domain": "augustethelabel.com",
       "archetype": "bohemian",
-      "contributed": 6,
-      "available": 100
+      "contributed": 38,
+      "available": 209
     },
     {
       "domain": "showmeyourmumu.com",
       "archetype": "bohemian",
-      "contributed": 6,
-      "available": 87
+      "contributed": 38,
+      "available": 435
+    },
+    {
+      "domain": "threebirdnest.com",
+      "archetype": "bohemian",
+      "contributed": 38,
+      "available": 500
+    },
+    {
+      "domain": "bohobeachhut.com",
+      "archetype": "bohemian",
+      "contributed": 38,
+      "available": 500
+    },
+    {
+      "domain": "boden.com",
+      "archetype": "classic",
+      "contributed": 34,
+      "available": 500
+    },
+    {
+      "domain": "jmclaughlin.com",
+      "archetype": "classic",
+      "contributed": 33,
+      "available": 499
+    },
+    {
+      "domain": "grammarnyc.com",
+      "archetype": "classic",
+      "contributed": 24,
+      "available": 24
+    },
+    {
+      "domain": "mgemi.com",
+      "archetype": "classic",
+      "contributed": 33,
+      "available": 357
+    },
+    {
+      "domain": "laticoleathers.com",
+      "archetype": "classic",
+      "contributed": 33,
+      "available": 207
+    },
+    {
+      "domain": "sameswim.com",
+      "archetype": "classic",
+      "contributed": 33,
+      "available": 500
     }
   ],
   "failedStores": [
     {
       "domain": "braindead.com",
-      "archetype": "edgy_alternative",
+      "archetype": "edgy",
       "status": "blocked",
       "httpCode": 200,
       "note": "200 but not JSON (likely bot-challenge/HTML page)"
     },
     {
       "domain": "onlineceramics.com",
-      "archetype": "edgy_alternative",
+      "archetype": "edgy",
       "status": "disabled",
       "httpCode": 404,
       "note": "endpoint not found"

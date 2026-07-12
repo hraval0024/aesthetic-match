@@ -1,10 +1,12 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { tagImage } from "@/lib/claude/tagImage";
+import { classifyIntent } from "@/lib/claude/classifyIntent";
 import { validateImageBytes } from "@/lib/images/validate";
 import { hashImage } from "@/lib/images/hash";
 import { createLimiter } from "@/lib/concurrency/limiter";
 import { aggregateStyleDNA } from "@/lib/profile/aggregation";
+import { checkRateLimit, getClientKey } from "@/lib/security/rateLimit";
 import type { ImageTags } from "@/lib/claude/taxonomy";
 
 export const runtime = "nodejs";
@@ -12,6 +14,12 @@ export const runtime = "nodejs";
 const MIN_IMAGES = 5;
 const MAX_IMAGES = 10;
 const CONCURRENCY = 5;
+// Tighter than the other routes -- this is the most expensive request in
+// the app (up to 10 Claude vision calls plus a classification call per
+// submission), and legitimate use rarely needs more than a couple of
+// profile rebuilds in a short window.
+const RATE_LIMIT = 5;
+const RATE_WINDOW_MS = 5 * 60_000;
 
 type ResolvedInput = { clientId: string; label: string; bytes: Buffer; mediaType: string };
 type FailedInput = {
@@ -82,6 +90,17 @@ type TaggedResult = {
 };
 
 export async function POST(request: NextRequest) {
+  const rateLimit = checkRateLimit(`profile:${getClientKey(request)}`, RATE_LIMIT, RATE_WINDOW_MS);
+  if (!rateLimit.allowed) {
+    // Rejected before the stream opens -- a plain JSON error, not an
+    // NDJSON event, since the client's fetch wrapper for this route only
+    // starts parsing NDJSON after a 200.
+    return NextResponse.json(
+      { error: "Too many requests. Please wait a few minutes and try again." },
+      { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } },
+    );
+  }
+
   const encoder = new TextEncoder();
 
   const stream = new ReadableStream({
@@ -114,6 +133,9 @@ export async function POST(request: NextRequest) {
       const files = formData.getAll("images").filter((v): v is File => v instanceof File);
       const clientIdsRaw = formData.get("clientIds");
       const clientIds: string[] = clientIdsRaw ? JSON.parse(clientIdsRaw as string) : files.map((f) => f.name);
+
+      const shoppingIntentRaw = formData.get("shoppingIntent");
+      const shoppingIntentText = typeof shoppingIntentRaw === "string" ? shoppingIntentRaw.trim() : "";
 
       const totalSubmitted = files.length;
 
@@ -150,6 +172,12 @@ export async function POST(request: NextRequest) {
         );
         return;
       }
+
+      // Fired now (not awaited yet), only once we know the request clears
+      // the minimum-valid-images bar -- runs concurrently with the image
+      // tagging batch below rather than adding sequential latency, and
+      // doesn't waste a call on a request that's about to fail anyway.
+      const intentClassificationPromise = shoppingIntentText ? classifyIntent(shoppingIntentText) : null;
 
       // Dedupe by content hash, preserving order -- a repeated image still
       // counts toward the minimum above, but only its first occurrence gets
@@ -299,6 +327,14 @@ export async function POST(request: NextRequest) {
 
       const styleDNA = aggregateStyleDNA(successfullyTagged.map((r) => r.tags));
 
+      // Non-fatal by design: a shopping-intent phrase is additive context
+      // on top of the StyleDNA, not required for it. If classification
+      // fails (or nothing was typed), shoppingIntent is just null and the
+      // recommendations page falls back to plain StyleDNA-only browsing --
+      // the same graceful-degradation posture as everything else here.
+      const intentClassification = intentClassificationPromise ? await intentClassificationPromise : null;
+      const shoppingIntent = intentClassification?.ok ? intentClassification.intent : null;
+
       const cacheHits = taggedResults.filter((r) => r.status === "cache_hit").length;
       const freshlyTagged = taggedResults.filter((r) => r.status === "tagged").length;
       const tagFailedResults = taggedResults.filter((r) => r.status === "tag_failed");
@@ -321,6 +357,10 @@ export async function POST(request: NextRequest) {
           taggingLatencyMs,
           archetypePrimary: styleDNA.archetypePrimary,
           archetypeSecondary: styleDNA.archetypeSecondary,
+          shoppingIntentProvided: Boolean(shoppingIntentText),
+          shoppingIntentClassified: shoppingIntent !== null,
+          shoppingIntentFailureReason:
+            shoppingIntentText && !intentClassification?.ok ? intentClassification?.reason : undefined,
           // full detail on anything skipped, even though the request
           // succeeded overall -- keeps quiet partial failures observable
           skippedDetail: failed.length ? failed : undefined,
@@ -330,6 +370,7 @@ export async function POST(request: NextRequest) {
       send({
         type: "done",
         styleDNA,
+        shoppingIntent,
         images: taggedResults,
         // tagFailed is surfaced here (not just logged) so a photo that
         // silently dropped out of the profile due to an API hiccup is

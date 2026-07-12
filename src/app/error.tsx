@@ -21,7 +21,7 @@ export default function Error({
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-white px-6 text-center text-stone-900">
-      <p className="text-xs font-medium uppercase tracking-[0.2em] text-stone-400">Something went wrong</p>
+      <p className="text-xs font-medium uppercase tracking-[0.2em] text-stone-500">Something went wrong</p>
       <h1 className="mt-3 text-2xl font-medium tracking-tight">We hit a snag loading this page.</h1>
       <p className="mx-auto mt-3 max-w-sm text-[15px] text-stone-500">
         Your saved photos and style profile are safe — this was just a display error.

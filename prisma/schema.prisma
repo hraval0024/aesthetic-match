@@ -20,30 +20,47 @@ model Store {
 }
 
 // One row per catalog product, after variant-to-product collapsing.
+// isAvailable/publishedAt are structured Shopify fields (variants[].available,
+// the merchant's own published_at) captured directly, no AI classification
+// needed -- see ranking taxonomy notes: isAvailable is an always-on hard
+// filter, publishedAt drives the "newest" sort. publishedAt intentionally
+// replaces createdAt as the sort-relevant timestamp: createdAt reflects our
+// own ingestion-run time (near-identical across an entire catalog rebuild),
+// not when the product actually went live on the merchant's site.
 model Product {
-  id         String    @id @default(cuid())
-  storeId    String
-  store      Store     @relation(fields: [storeId], references: [id])
-  handle     String
-  title      String
-  productUrl String
-  imageUrl   String
-  imageHash  String?
-  priceMin   Float?
-  priceMax   Float?
-  currency   String?
-  createdAt  DateTime  @default(now())
-  tag        TagCache? @relation(fields: [imageHash], references: [imageHash])
+  id          String    @id @default(cuid())
+  storeId     String
+  store       Store     @relation(fields: [storeId], references: [id])
+  handle      String
+  title       String
+  productUrl  String
+  imageUrl    String
+  imageHash   String?
+  priceMin    Float?
+  priceMax    Float?
+  currency    String?
+  isAvailable Boolean   @default(true)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  tag         TagCache? @relation(fields: [imageHash], references: [imageHash])
 
   @@unique([storeId, handle])
 }
 
 // Vision tagging result, cached by image hash so identical images
-// (across products or re-runs) are never re-tagged. silhouette and
-// colorFamily are JSON-stringified arrays -- Prisma+SQLite has no
-// native array/enum column type, so enum validity is enforced in
-// application code (lib/claude/tagImage.ts), same place the schema's
-// forced tool_choice enums are validated as a second safety net.
+// (across products or re-runs) are never re-tagged. silhouette, colorFamily
+// and occasion are JSON-stringified arrays -- Prisma+SQLite has no native
+// array/enum column type, so enum validity is enforced in application code
+// (lib/claude/taxonomy.ts), same place the schema's forced tool_choice
+// enums are validated as a second safety net.
+//
+// category/subcategory/occasion/climate are nullable: this table is shared
+// between catalog-product tagging (PRODUCT_TAG_TOOL, populates all fields)
+// and user-uploaded StyleDNA photo tagging (TAG_TOOL, only populates the
+// style fields -- aggregateStyleDNA never reads category/occasion/climate,
+// so there's no reason to ask Claude for them on that latency-sensitive
+// user-facing path). A row with these null is a user-photo tag, not a
+// catalog product missing data.
 model TagCache {
   imageHash          String    @id
   archetypePrimary   String
@@ -54,6 +71,10 @@ model TagCache {
   fabric             String?
   textureNotes       String?
   confidence         Float?
+  category           String?
+  subcategory        String?
+  occasion           String?
+  climate            String?
   taggedAt           DateTime  @default(now())
   products           Product[]
 }

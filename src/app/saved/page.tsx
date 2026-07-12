@@ -31,7 +31,7 @@ function SavedCard({ item, onRemove }: { item: SavedRecommendation; onRemove: ()
         </button>
       </div>
       <div className="flex flex-1 flex-col pt-3">
-        <p className="text-[11px] uppercase tracking-wide text-stone-400">{item.store}</p>
+        <p className="text-[11px] uppercase tracking-wide text-stone-500">{item.store}</p>
         <h3 className="mt-0.5 line-clamp-2 text-sm font-medium leading-snug text-stone-900">{item.title}</h3>
         {item.priceMin != null && <p className="mt-1 text-sm text-stone-600">${item.priceMin.toFixed(0)}</p>}
         {item.rationale && (
@@ -73,7 +73,7 @@ export default function SavedPage() {
       <AppHeader showEditPhotos={hasProfile} />
       <div className="mx-auto w-full max-w-6xl px-6 pt-4">
         <div className="border-b border-stone-200 pb-8 text-center">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-stone-400">Your matches</p>
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-stone-500">Your matches</p>
           <h1 className="mt-3 text-2xl font-medium tracking-tight sm:text-3xl">Saved</h1>
         </div>
 

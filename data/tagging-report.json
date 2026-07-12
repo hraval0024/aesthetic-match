@@ -1,32 +1,524 @@
 {
-  "generatedAt": "2026-07-08T22:21:29.442Z",
-  "totalProducts": 200,
-  "cacheHits": 187,
-  "freshlyTagged": 13,
-  "failed": 0,
+  "generatedAt": "2026-07-10T20:17:39.760Z",
+  "totalProducts": 1900,
+  "cacheHits": 1577,
+  "freshlyTagged": 225,
+  "failed": 98,
   "downloadFailed": 0,
-  "cacheHitRate": 0.935,
-  "successRate": 1,
-  "avgClaudeLatencyMs": 5493,
+  "cacheHitRate": 0.83,
+  "successRate": 0.9484210526315789,
+  "avgClaudeLatencyMs": 7542,
   "confidence": {
     "threshold": 0.6,
-    "average": 0.7700499999999993,
-    "lowConfidenceCount": 5,
-    "lowConfidenceRate": 0.025,
+    "average": 0.838412874583802,
+    "lowConfidenceCount": 18,
+    "lowConfidenceRate": 0.009988901220865706,
     "exceedsCoverageAlertThreshold": false,
-    "note": "2.5% of tagged items scored below 0.6 confidence -- within the 15% threshold, taxonomy looks adequate."
+    "note": "1.0% of tagged items scored below 0.6 confidence -- within the 15% threshold, taxonomy looks adequate."
   },
   "archetypeDistribution": {
-    "old_money": 21,
-    "coastal_grandmother": 18,
-    "clean_girl_minimal": 30,
-    "trend_forward": 43,
-    "streetwear_athletic": 26,
-    "cottagecore_romantic": 28,
-    "scandi_minimal": 8,
-    "edgy_alternative": 15,
-    "bohemian": 11
+    "coastal": 226,
+    "clean_girl_minimal": 240,
+    "bohemian": 173,
+    "streetwear_athletic": 152,
+    "cottagecore_romantic": 239,
+    "classic": 167,
+    "old_money": 139,
+    "trend_forward": 274,
+    "scandi_minimal": 28,
+    "edgy": 164
   },
-  "failedItems": [],
+  "failedItems": [
+    {
+      "title": "Jungle Blossoms Pant Pajama Set - Black",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Luca Strap",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Tucson Cord Organizer",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "The Women's Plaid Dress Sock - Cream Plaid",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Luca Strap",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "The Women's Striped Sock - White/Green",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "The Women's Smile Sock - Heather Grey/Green",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "The Women's New York NY Sock - Royal Blue",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Stowe Round Coin Pouch",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "The Women's Fair Isle Sock - Heather Grey/Brown",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "The Women's Striped Sock - White/Poppy",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "The Women's Smile Sock - Navy/Royal Blue",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Star Charm",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Lightweight Pointelle Cardigan Navy",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Short Sleeve Puff Sleeve Cardigan",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Pima Modal Robe (Earlier Version)",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Calissa Sunglasses Chain | 18ct Gold Plated",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "The Sneaker Sock - White",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "The Sneaker Sock - Dune",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Hed Mayner x Reebok Double Socks - White/Yellow",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Hed Mayner x Reebok Double Socks - Green/Cream",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Hed Mayner x Reebok Double Socks - Shaded Blue",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Face Mask",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Lemon Pouch",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Face Mask",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Edikted Socks",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "OV Club Crew Sock",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "OV Club Crew Sock",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "OV Club Crew Sock",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Edikted Socks",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "OV Rec Ankle Sock",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "OV Rec Ankle Sock",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Wool Cashmere Ribbed Noble Full Zip Hoodie - Azure Blue",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "OV Rec Ankle Sock",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Sway Mid-Rise On The Go Pant - Black",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Women's Lettuce Edge Sock - White/Winter Frost",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Edikted Princess Pilates Socks",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Unisex Half-Crew Throwback Sock - Burgundy/White",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Stripey Pilates Socks",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Stellar Colorblock Sock",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Kalani V-Neck Dress 31",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "COLLÉGIEN POINTELLE KNEE HIGH SOCK -- NOIR DE CHARBON",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "The Bed Set - Pink Floral Dot Stripe",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "FRANKIE SHORT -- CAMEO PINK",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Case-Mate x LoveShackFancy Magnetic Wallet Works With MagSafe - Ribbon Rosa Flora",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "FRANKIE SHORT -- SALT",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Artist's Colors Sketchbook",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "ILDA TANGA -- SALT",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "AirPods Pro 3 Case-Mate x LoveShackFancy - Everblooming Rosettes",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "The Baby Arlo Bubble - Pink Variegated Stripe",
+      "status": "tag_failed",
+      "note": "api_error: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64: image exceeds 10 MB maximum: 21428528 bytes > 10485760 bytes\"},\"request_id\":\"req_011Cctz1FNjNJVcSkpAAah8q\"}"
+    },
+    {
+      "title": "ILDA TANGA -- CAMEO PINK",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "IDALIA BRA -- PAPAYA",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Roller Rabbit x Hill House Small Makeup Bag - Blue Floral Monkey Trellis",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "ILDA TANGA -- PAPAYA",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "GISELA ROBE -- TULIP POSY",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Calligraphy Notebook",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "ILDA TANGA -- SALT CLOVER BLOSSOM",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "IDALIA BRA -- NUTMEG CLOVER BLOSSOM",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "iPhone 16 Pro Max Case-Mate x LoveShackFancy - Blooming Heirloom w/ MagSafe",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Logo Socks 2-Pack",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Short Socks - Dots in Motion",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Long Hand-Crochet Bow Hair Clip - Della Robbia Blue",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Logo Knee High Socks",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Sibu Wash Bag",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Hair Bow Clip - Muted Blush",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Water Bottle 900ml",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Long Socks - Artist Dots",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Short Socks - Rosewood Mint Stripes",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Short Socks - Artist Dots",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Short Socks - Rose intarsia",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Hilo Wash Bag",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Long Socks - Fairisle",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Laptop Cover Bag - Five Resolutions",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "KENDALL OAT WIDE LEG PANT",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Pencil Socks",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Art Lover Badge Set",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Casket Carry Case",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "LO x Lauren Martin Mayo Socks",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "LO x Lauren Martin Condiments Keyring",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Pompompurin Socks",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Twisssted Armwarmers",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Snow Leopard Lace Brief",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Darlene Midi Dress",
+      "status": "tag_failed",
+      "note": "api_error: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.0.content.0.image.source.base64: image exceeds 10 MB maximum: 11619812 bytes > 10485760 bytes\"},\"request_id\":\"req_011CctzBANPM1t4ZVS6z6YyK\"}"
+    },
+    {
+      "title": "Classic PJ Set ~ Tiger Dreams Silky",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Cali Raglan Tee",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Socks in Clover",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Lyla Leather Passport Case",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Labrador Socks",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Leather Tech and Accessory Roll",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Fitted Wool Peplum Cardigan-Black",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Soft Leather Paperweight",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Framed Leather Paperweight",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Snug Henley Pyjamas-Floral",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Bowie Leather Shoulder Strap",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Kate Ruffle Top in Neo Jewel Ikat",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Fringe Tassel Earring (Gold/Cream)",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Archer Leather Shoulder Strap",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    },
+    {
+      "title": "Woven Dungarees-Green Ticking Stripe",
+      "status": "tag_failed",
+      "note": "schema_validation_failed"
+    }
+  ],
   "downloadFailedItems": []
 }

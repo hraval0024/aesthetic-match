@@ -21,6 +21,13 @@ export type StyleDNA = {
   sourceImageCount?: number;
 };
 
+// Classified from the optional free-text "what are you shopping for?" field
+// on the profile page (see classifyIntent.ts) -- persisted alongside the
+// StyleDNA so the recommendations page can pre-seed its occasion/climate
+// filters on first load, without the user ever re-typing or re-selecting
+// anything from a taxonomy picker.
+export type ShoppingIntent = { occasion: string[]; climate: string | null };
+
 export type SavedRecommendation = {
   productId: string;
   title: string;
@@ -34,6 +41,7 @@ export type SavedRecommendation = {
 
 const STYLE_DNA_KEY = "aesthetic-match:styleDNA";
 const SAVED_KEY = "aesthetic-match:savedRecommendations";
+const SHOPPING_INTENT_KEY = "aesthetic-match:shoppingIntent";
 
 function readJSON<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
@@ -77,6 +85,60 @@ export function setStyleDNA(dna: StyleDNA): boolean {
 
 export function clearStyleDNA(): void {
   removeKey(STYLE_DNA_KEY);
+}
+
+export function getShoppingIntent(): ShoppingIntent | null {
+  return readJSON<ShoppingIntent | null>(SHOPPING_INTENT_KEY, null);
+}
+
+/** Always call this on profile creation, even with an empty intent -- if
+ * the user doesn't type anything this time, any stale intent from a
+ * previous profile should clear too, not silently linger. */
+export function setShoppingIntent(intent: ShoppingIntent): boolean {
+  return writeJSON(SHOPPING_INTENT_KEY, intent);
+}
+
+export function clearShoppingIntent(): void {
+  removeKey(SHOPPING_INTENT_KEY);
+}
+
+const SHOPPING_INTENT_TEXT_KEY = "aesthetic-match:shoppingIntentText";
+
+// The raw phrase the user typed ("summer trip to Italy"), separate from
+// its classified {occasion, climate} result -- needed anywhere the app
+// shows the user their own words back (the profile page's edit flow, the
+// "Showing results for..." line, the landing page's "last time you
+// shopped for" recall). Showing the classified taxonomy values back to
+// the user would violate the "user never sees the taxonomy" principle
+// this feature was built around.
+export function getShoppingIntentText(): string {
+  return readJSON<string>(SHOPPING_INTENT_TEXT_KEY, "");
+}
+
+export function setShoppingIntentText(text: string): boolean {
+  return writeJSON(SHOPPING_INTENT_TEXT_KEY, text);
+}
+
+export function clearShoppingIntentText(): void {
+  removeKey(SHOPPING_INTENT_TEXT_KEY);
+}
+
+const PROFILE_NOTICE_KEY = "aesthetic-match:profileNotice";
+
+/** One-shot notice set right before navigating from /profile to
+ * /recommendations (e.g. "3 of your photos couldn't be used") -- since
+ * building a StyleDNA no longer has its own review screen, this is how
+ * that transparency survives the jump instead of silently disappearing. */
+export function setProfileNotice(text: string): boolean {
+  return writeJSON(PROFILE_NOTICE_KEY, text);
+}
+
+/** Reads and clears in one step, so the notice shows exactly once on
+ * landing, not on every subsequent visit to /recommendations. */
+export function consumeProfileNotice(): string | null {
+  const notice = readJSON<string | null>(PROFILE_NOTICE_KEY, null);
+  if (notice) removeKey(PROFILE_NOTICE_KEY);
+  return notice;
 }
 
 export function getSavedRecommendations(): SavedRecommendation[] {
