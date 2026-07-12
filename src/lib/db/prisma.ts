@@ -11,35 +11,52 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-// Local dev sets DATABASE_URL explicitly (file:./prisma/dev.db, writable,
-// gitignored) and always wins here. With no override -- i.e. production --
-// the deployment bundle ships prisma/prod.db (built by
-// scripts/ingest-catalog.ts + scripts/tag-catalog.ts) as a read-only file,
-// but TagCache still needs to be writable: a user's uploaded photo that
-// isn't already cached gets tagged and upserted at request time. Most
-// serverless hosts (e.g. Vercel) make the deployment filesystem read-only
-// everywhere except /tmp, so we copy the bundled snapshot into /tmp once
-// per cold start and open that instead. Consequence: TagCache doesn't
-// persist across cold starts or share across concurrent instances in
-// production -- disclosed in INSTRUCTIONS.md as a known limitation, not a
-// correctness issue (a cache miss just re-tags via Claude and produces an
-// identical result, just without the latency win).
-function resolveDatabaseUrl(): string {
-  if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
-
+// One-time seed: if nothing exists yet at `targetPath`, copy the read-only
+// bundled snapshot (prisma/prod.db, built by scripts/ingest-catalog.ts +
+// scripts/tag-catalog.ts) there. Idempotent and safe to call on every boot --
+// once the target exists, this is a no-op forever, so a persistent volume
+// (Railway, etc.) only gets seeded on its very first deploy and every write
+// after that (e.g. TagCache upserts from live requests) survives restarts
+// and redeploys untouched.
+function seedIfMissing(targetPath: string): void {
   const bundled = path.join(process.cwd(), "prisma", "prod.db");
-  const writable = path.join("/tmp", "prod.db");
   try {
-    if (!fs.existsSync(writable) && fs.existsSync(bundled)) {
-      fs.copyFileSync(bundled, writable);
+    if (!fs.existsSync(targetPath) && fs.existsSync(bundled)) {
+      fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+      fs.copyFileSync(bundled, targetPath);
     }
-    if (fs.existsSync(writable)) return `file:${writable}`;
   } catch {
-    // /tmp unavailable -- fall through to the bundled path directly. Reads
-    // still work; TagCache writes will fail (caught, non-fatal -- see
-    // api/profile/route.ts).
+    // Target directory unwritable -- fall through and let Prisma's own
+    // connection error surface the real problem; nothing more to do here.
   }
-  return `file:${bundled}`;
+}
+
+// Local dev sets DATABASE_URL explicitly (file:./prisma/dev.db, writable,
+// gitignored) and always wins here -- dev.db already exists in a normal
+// checkout, so seedIfMissing is a no-op there.
+//
+// In production, DATABASE_URL should point at a path on persistent storage
+// (a Railway Volume, for example: file:/data/prod.db). On first boot
+// against a fresh, empty volume this seeds it once from the bundled
+// snapshot; from then on the volume file is the durable source of truth.
+// This replaced an earlier /tmp-per-cold-start approach built for
+// serverless hosts with a read-only deployment filesystem (e.g. Vercel) --
+// that copy had to re-run on every cold start since /tmp itself doesn't
+// persist, which meant TagCache writes from live requests never actually
+// survived past the instance that made them. A mounted volume fixes that
+// for good: seed once, persist forever. The /tmp fallback below is kept
+// only for a host with no DATABASE_URL and no volume at all.
+function resolveDatabaseUrl(): string {
+  if (process.env.DATABASE_URL) {
+    const url = process.env.DATABASE_URL;
+    if (url.startsWith("file:")) seedIfMissing(url.slice("file:".length));
+    return url;
+  }
+
+  const writable = path.join("/tmp", "prod.db");
+  seedIfMissing(writable);
+  if (fs.existsSync(writable)) return `file:${writable}`;
+  return `file:${path.join(process.cwd(), "prisma", "prod.db")}`;
 }
 
 const adapter = new PrismaLibSql({ url: resolveDatabaseUrl() });
