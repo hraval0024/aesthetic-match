@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Modern engineering is about directing leverage — tools, judgment, taste — toward real outcomes. This take-home is designed around that.",
   "private": true,
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "postinstall": "prisma generate",
     "dev": "next dev",
