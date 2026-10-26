@@ -4,7 +4,7 @@
   "description": "Modern engineering is about directing leverage — tools, judgment, taste — toward real outcomes. This take-home is designed around that.",
   "private": true,
   "engines": {
-    "node": ">=20.19.0"
+    "node": ">=22.12.0 <23"
   },
   "scripts": {
     "postinstall": "prisma generate",
